@@ -4,7 +4,6 @@ html, body {
 }
 
 body {
-	background-color: rgb(71, 71, 71);
 	margin: 0;
 	display: flex;
 	justify-content: center;
