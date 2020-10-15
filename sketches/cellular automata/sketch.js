@@ -9,6 +9,7 @@ function make2DArray(cols, rows){
 }
 
 let grid;
+let next;
 let cols;
 let rows;
 let cellSize = 10;
@@ -22,7 +23,7 @@ function setup(){
     grid = make2DArray(cols, rows);
     for (let i = 0; i < cols; i++){
         for (let j = 0; j < rows; j++){
-            grid[i][j] = floor(random(2));
+            grid[i][j] = new Particle(i, j, floor(random(2)));
         }
     }
 
@@ -30,43 +31,32 @@ function setup(){
 
 function draw(){
 
+    for (let i = 0; i < cols; i++){
+        for (let j = 0; j < rows; j++){
+
+            grid[i][j].update();
+
+        } 
+    }
+
+    for (let i = 0; i < cols; i++){
+        for (let j = 0; j < rows; j++){
+
+            grid[i][j].state = grid[i][j].nextState;
+
+        } 
+    }
+
     background(255);
     noStroke();
 
     for (let i = 0; i < cols; i++){
         for (let j = 0; j < rows; j++){
 
-            if (grid[i][j] == 1){
-                fill(0);
-                square(i * cellSize, j * cellSize, cellSize);
-            }
+            grid[i][j].draw();
 
         } 
     }
-
-    let next = make2DArray(cols, rows);
-
-    for (let i = 0; i < cols; i++){
-        for (let j = 0; j < rows; j++){
-
-            let state = grid[i][j];
-
-            let neighbors = countNeighbors(grid, i, j);
-
-            if (state == 0 && neighbors == 3) {
-                next[i][j] = 1; 
-            } else if (state == 1 && (neighbors < 2 || neighbors > 3)) {
-                next[i][j] = 0;
-            } else {
-                next[i][j] = state;
-            }
-
-        } 
-    }
-
-    grid = next;
-
-    
 
 }
 
@@ -77,12 +67,12 @@ function countNeighbors(grid, x, y){
 
             let col = (x + i + cols) % cols;
             let row = (y + j + rows) % rows;
-            sum += grid[col][row];
+            sum += grid[col][row].state;
 
         }
     }
 
-    sum -= grid[x][y];
+    sum -= grid[x][y].state;
     return sum;
     
 }
